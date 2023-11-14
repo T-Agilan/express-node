@@ -127,6 +127,27 @@ app.put("/:id", function (req, res) {
       res.status(500).json({ error: "Error updating user data" });
     });
 });
+app.delete("/:id", function (req, res) {
+  const id = req.params.id;
+
+  // Check if the provided ID is valid
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "Invalid ID" });
+  }
+
+  // Find the user by ID and delete
+  users.findByIdAndRemove(id)
+    .then((deletedUser) => {
+      if (!deletedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.json({ message: "User deleted successfully" });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: "Error deleting user" });
+    });
+});
 
  app.listen(3002);
 
